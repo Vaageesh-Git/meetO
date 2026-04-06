@@ -1,33 +1,31 @@
 export class Profile {
-  private profileId: string;
   private userId: string;
   private bio: string;
-  private profilePictureUrl: string;
-  private followerCount: number;
-  private followingCount: number;
+  private avatarUrl: string;
 
-  constructor(profileId: string, userId: string) {
-    this.profileId = profileId;
+  constructor(userId: string, bio: string = "", avatarUrl: string = "") {
     this.userId = userId;
-    this.bio = "";
-    this.profilePictureUrl = "";
-    this.followerCount = 0;
-    this.followingCount = 0;
-  }
-
-  public updateBio(bio: string): void {
     this.bio = bio;
+    this.avatarUrl = avatarUrl;
   }
 
-  public updateProfilePicture(url: string): void {
-    this.profilePictureUrl = url;
+  public getUserId(): string {
+    return this.userId;
   }
 
-  public getFollowers(): number {
-    return this.followerCount;
+  public getBio(): string {
+    return this.bio;
   }
 
-  public getFollowing(): number {
-    return this.followingCount;
+  public getAvatarUrl(): string {
+    return this.avatarUrl;
+  }
+
+  public updateBio(newBio: string): void {
+    this.bio = newBio;
+  }
+
+  public updateAvatarUrl(newUrl: string): void {
+    this.avatarUrl = newUrl;
   }
 }

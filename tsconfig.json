@@ -3,11 +3,10 @@
     "rootDir": "./src",
     "outDir": "./dist",
 
-    "module": "commonjs",
+    "module": "Node16",
     "target": "esnext",
     "types": ["node"],
-    "moduleResolution": "node",
-
+    "moduleResolution": "Node16",
     "sourceMap": true,
 
     "strict": true,
