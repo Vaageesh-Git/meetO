@@ -27,32 +27,33 @@ import { MessageController } from './controllers/MessageController';
 // Middleware
 import { authMiddleware } from './middleware/authMiddleware';
 
+// New Middlewares
+import { errorHandler } from './middleware/errorHandler';
+import { loggerMiddleware } from './middleware/logger';
+import { apiRateLimiter } from './middleware/rateLimiter';
+
+// Dependency Injection Container
+import { container } from './di/container';
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ─── Dependency Injection ────────────────────────────────────────
-const userService = new UserService();
-const notificationService = new NotificationService();
-const followService = new FollowService(notificationService);
-const postService = new PostService();
-const commentService = new CommentService(postService, notificationService);
-const likeService = new LikeService(postService, notificationService);
-const feedService = new FeedService(postService, followService);
-const profileService = new ProfileService(userService);
-const messageService = new MessageService();
+// Apply global middlewares
+app.use(loggerMiddleware);
+app.use('/api', apiRateLimiter);
 
-// ─── Controllers ────────────────────────────────────────────────
-const authController = new AuthController(userService);
-const userController = new UserController(userService, followService);
-const profileController = new ProfileController(profileService);
-const postController = new PostController(postService, likeService);
-const commentController = new CommentController(commentService);
-const likeController = new LikeController(likeService);
-const followController = new FollowController(followService);
-const feedController = new FeedController(feedService, postService, likeService);
-const notificationController = new NotificationController(notificationService);
-const messageController = new MessageController(messageService, userService);
+// ─── Controllers (Resolved from DI) ──────────────────────────────
+const authController = new AuthController(container.userService);
+const userController = new UserController(container.userService, container.followService);
+const profileController = new ProfileController(container.profileService);
+const postController = new PostController(container.postService, container.likeService);
+const commentController = new CommentController(container.commentService);
+const likeController = new LikeController(container.likeService);
+const followController = new FollowController(container.followService);
+const feedController = new FeedController(container.feedService, container.postService, container.likeService);
+const notificationController = new NotificationController(container.notificationService);
+const messageController = new MessageController(container.messageService, container.userService);
 
 // ─── Routes ─────────────────────────────────────────────────────
 
@@ -109,5 +110,8 @@ app.post('/api/messages', authMiddleware, messageController.sendMessage);
 app.get('/api/messages/:userId', authMiddleware, messageController.getConversation);
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
+
+// Global error handler MUST be the last middleware
+app.use(errorHandler);
 
 export default app;
