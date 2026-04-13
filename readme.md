@@ -8,8 +8,6 @@
 
 **meetO** is a feature-rich social networking application that allows users to connect, share posts, follow each other, interact through comments and likes, send direct messages, and receive real-time notifications. The platform is designed with scalability, maintainability, and clean architecture at its core — making it a showcase of modern software engineering practices.
 
-> **Note:** The project is currently running locally. Deployment to a production environment is planned after Milestone 1 is complete.
-
 ---
 
 ## Tech Stack
@@ -152,6 +150,8 @@ npm run dev
 ```
 
 The frontend will run at `http://localhost:5173` and the backend at `http://localhost:5000`.
+
+> **Note:** The project is currently running locally. Deployment to a production environment is planned after Milestone 1 is complete.
 
 ---
 
