@@ -29,6 +29,8 @@
 meetO/
 ├── backend/
 │   ├── src/
+|   ├── config/
+|   |       ├── db.ts
 │   │   ├── controllers/
 │   │   │   ├── AuthController.ts
 │   │   │   ├── UserController.ts
@@ -100,7 +102,6 @@ meetO/
 
 ### Notifications
 - Receive notifications for likes, comments, and follows
-- Mark notifications as read
 - Get all notifications for a user
 
 ---
@@ -322,7 +323,7 @@ User -> Frontend -> POST /api/posts -> AuthMiddleware -> PostController
 | Shivansh |  Backend Development (controllers, services, middleware, auth) |
 | Arun | Documentation (project report, schema, design patterns writeup) |
 | Pratham | Frontend Development (React, components, routing, state) |
-| Nav | Documentation & Testing (test cases, setup guides, report sections) |
+| Nav Prabhat | Documentation & Testing (test cases, setup guides, report sections) |
 
 ---
 
