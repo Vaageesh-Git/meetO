@@ -4,11 +4,16 @@ export class RedisCache {
   private redis: Redis;
 
   constructor() {
-    this.redis = new IORedis({
-      host: process.env.REDIS_HOST || '127.0.0.1',
-      port: parseInt(process.env.REDIS_PORT || '6379', 10),
-      maxRetriesPerRequest: null,
-    });
+    const redisUrl = process.env.REDIS_URL || process.env.REDIS_HOST;
+    if (redisUrl && redisUrl.startsWith('redis://')) {
+      this.redis = new IORedis(redisUrl, { maxRetriesPerRequest: null });
+    } else {
+      this.redis = new IORedis({
+        host: process.env.REDIS_HOST || '127.0.0.1',
+        port: parseInt(process.env.REDIS_PORT || '6379', 10),
+        maxRetriesPerRequest: null,
+      });
+    }
   }
 
   async get<T>(key: string): Promise<T | null> {

@@ -6,5 +6,6 @@ export declare class AuthController {
     register: (req: Request, res: Response) => void;
     login: (req: Request, res: Response) => void;
     logout: (req: Request, res: Response) => void;
+    getMe: (req: any, res: Response) => void;
 }
 //# sourceMappingURL=AuthController.d.ts.map

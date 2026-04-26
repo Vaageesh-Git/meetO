@@ -5,16 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-// Services
-const UserService_1 = require("./services/UserService");
-const ProfileService_1 = require("./services/ProfileService");
-const PostService_1 = require("./services/PostService");
-const CommentService_1 = require("./services/CommentService");
-const LikeService_1 = require("./services/LikeService");
-const FollowService_1 = require("./services/FollowService");
-const FeedService_1 = require("./services/FeedService");
-const NotificationService_1 = require("./services/NotificationService");
-const MessageService_1 = require("./services/MessageService");
 // Controllers
 const AuthController_1 = require("./controllers/AuthController");
 const UserController_1 = require("./controllers/UserController");
@@ -28,35 +18,35 @@ const NotificationController_1 = require("./controllers/NotificationController")
 const MessageController_1 = require("./controllers/MessageController");
 // Middleware
 const authMiddleware_1 = require("./middleware/authMiddleware");
+// New Middlewares
+const errorHandler_1 = require("./middleware/errorHandler");
+const logger_1 = require("./middleware/logger");
+const rateLimiter_1 = require("./middleware/rateLimiter");
+// Dependency Injection Container
+const container_1 = require("./di/container");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-// ─── Dependency Injection ────────────────────────────────────────
-const userService = new UserService_1.UserService();
-const notificationService = new NotificationService_1.NotificationService();
-const followService = new FollowService_1.FollowService(notificationService);
-const postService = new PostService_1.PostService();
-const commentService = new CommentService_1.CommentService(postService, notificationService);
-const likeService = new LikeService_1.LikeService(postService, notificationService);
-const feedService = new FeedService_1.FeedService(postService, followService);
-const profileService = new ProfileService_1.ProfileService(userService);
-const messageService = new MessageService_1.MessageService();
-// ─── Controllers ────────────────────────────────────────────────
-const authController = new AuthController_1.AuthController(userService);
-const userController = new UserController_1.UserController(userService, followService);
-const profileController = new ProfileController_1.ProfileController(profileService);
-const postController = new PostController_1.PostController(postService, likeService);
-const commentController = new CommentController_1.CommentController(commentService);
-const likeController = new LikeController_1.LikeController(likeService);
-const followController = new FollowController_1.FollowController(followService);
-const feedController = new FeedController_1.FeedController(feedService, postService, likeService);
-const notificationController = new NotificationController_1.NotificationController(notificationService);
-const messageController = new MessageController_1.MessageController(messageService, userService);
+// Apply global middlewares
+app.use(logger_1.loggerMiddleware);
+app.use('/api', rateLimiter_1.apiRateLimiter);
+// ─── Controllers (Resolved from DI) ──────────────────────────────
+const authController = new AuthController_1.AuthController(container_1.container.userService);
+const userController = new UserController_1.UserController(container_1.container.userService, container_1.container.followService);
+const profileController = new ProfileController_1.ProfileController(container_1.container.profileService);
+const postController = new PostController_1.PostController(container_1.container.postService, container_1.container.likeService);
+const commentController = new CommentController_1.CommentController(container_1.container.commentService);
+const likeController = new LikeController_1.LikeController(container_1.container.likeService);
+const followController = new FollowController_1.FollowController(container_1.container.followService);
+const feedController = new FeedController_1.FeedController(container_1.container.feedService, container_1.container.postService, container_1.container.likeService);
+const notificationController = new NotificationController_1.NotificationController(container_1.container.notificationService);
+const messageController = new MessageController_1.MessageController(container_1.container.messageService, container_1.container.userService);
 // ─── Routes ─────────────────────────────────────────────────────
 // Auth (public)
 app.post('/api/auth/register', authController.register);
 app.post('/api/auth/login', authController.login);
 app.post('/api/auth/logout', authController.logout);
+app.get('/api/auth/me', authMiddleware_1.authMiddleware, authController.getMe);
 // Users
 app.get('/api/users', authMiddleware_1.authMiddleware, userController.getAllUsers);
 app.get('/api/users/:id', authMiddleware_1.authMiddleware, userController.getUser);
@@ -95,5 +85,7 @@ app.get('/api/messages', authMiddleware_1.authMiddleware, messageController.getC
 app.post('/api/messages', authMiddleware_1.authMiddleware, messageController.sendMessage);
 app.get('/api/messages/:userId', authMiddleware_1.authMiddleware, messageController.getConversation);
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
+// Global error handler MUST be the last middleware
+app.use(errorHandler_1.errorHandler);
 exports.default = app;
 //# sourceMappingURL=app.js.map

@@ -40,6 +40,14 @@ class AuthController {
             }
             res.json({ message: 'Logged out' });
         };
+        this.getMe = (req, res) => {
+            const user = this.userService.getUserById(req.userId);
+            if (!user) {
+                res.status(404).json({ error: 'User not found' });
+                return;
+            }
+            res.json({ user: user.toJSON() });
+        };
     }
 }
 exports.AuthController = AuthController;

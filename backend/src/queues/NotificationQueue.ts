@@ -12,11 +12,14 @@ interface NotificationJobData {
 
 // Since we are mocking redis connection assuming it might not be running locally,
 // in a real environment it points to redis url.
-const connection = new IORedis({
-  host: process.env.REDIS_HOST || '127.0.0.1',
-  port: parseInt(process.env.REDIS_PORT || '6379', 10),
-  maxRetriesPerRequest: null,
-});
+const redisUrl = process.env.REDIS_URL || process.env.REDIS_HOST;
+const connection = (redisUrl && redisUrl.startsWith('redis://'))
+  ? new IORedis(redisUrl, { maxRetriesPerRequest: null })
+  : new IORedis({
+      host: process.env.REDIS_HOST || '127.0.0.1',
+      port: parseInt(process.env.REDIS_PORT || '6379', 10),
+      maxRetriesPerRequest: null,
+    });
 
 export const notificationQueue = new Queue<NotificationJobData>('notifications', { connection });
 

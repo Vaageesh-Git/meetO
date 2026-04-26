@@ -16,7 +16,13 @@ class UserController {
             const following = this.followService.getFollowing(id);
             const followers = this.followService.getFollowers(id);
             const isFollowing = req.userId ? this.followService.isFollowing(req.userId, id) : false;
-            res.json({ user: user.toJSON(), profile: profile?.toJSON(), followingCount: following.length, followersCount: followers.length, isFollowing });
+            res.json({
+                ...user.toJSON(),
+                profile: profile?.toJSON(),
+                followingCount: following.length,
+                followersCount: followers.length,
+                isFollowing
+            });
         };
         this.getAllUsers = (req, res) => {
             const users = this.userService.getAllUsers().map(u => {
