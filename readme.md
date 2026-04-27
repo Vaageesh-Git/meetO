@@ -332,6 +332,13 @@ User -> Frontend -> POST /api/posts -> AuthMiddleware -> PostController
 The project is currently running on local machines. All five team members can run the application locally by following the setup instructions above. Production deployment — including cloud hosting, environment configuration, and CI/CD pipeline setup — is planned as part of Milestone 2, once Milestone 1 is reviewed and approved.
 
 ---
+## 📄 Project Report
+
+You can view the complete SDSE Project Report here:
+
+🔗 [View Project Report (Google Drive)](https://drive.google.com/drive/folders/167cpKhkVzLsyAqt-rcuBlSJPyRun9Dee?usp=sharing)
+
+---
 
 ## Future Enhancements
 
